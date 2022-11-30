@@ -3,12 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AuthenticationDemo.Enums;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Azure;
-using AuthenticationDemo.Data;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace AuthenticationDemo.Controllers;
 [AllowAnonymous]
@@ -24,7 +18,7 @@ public class RegistrationController : ControllerBase
         _config = config; 
     }
     [HttpPost]
-    public async Task<Response> RegisterAsync([FromBody] UserCommand model)
+    public async Task<Response> RegisterAsync([FromBody] RegisterCommand model)
     {
         Response response = new Response();
         if (ModelState.IsValid)
@@ -32,6 +26,7 @@ public class RegistrationController : ControllerBase
             response.Status = ResponseStatus.Ok;
             response.Message = "model passed validation!!";
         }
+
         var user = new User
         {
             Email = model.Email,
@@ -42,14 +37,11 @@ public class RegistrationController : ControllerBase
             UserName = model.FirstName + model.LastName,
         };
         var result = await _userManager.CreateAsync(user, model.Password);
-        var claim = new Claim("Id", user.Id);
-        await _userManager.AddClaimAsync(user, claim);
-        byte[] token = await _userManager.CreateSecurityTokenAsync(user);
-
+        
         response.Data = new Dictionary<string, object>()
         {
-            {"Token", token},
-            {"User", model },
+            {"Result", result},
+            {"User", user },
         };
 
         return response;

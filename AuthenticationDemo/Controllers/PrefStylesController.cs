@@ -1,9 +1,15 @@
 ﻿using AuthenticationDemo.Enums;
 using AuthenticationDemo.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Text;
 
 namespace AuthenticationDemo.Controllers;
 
@@ -13,16 +19,26 @@ namespace AuthenticationDemo.Controllers;
 public class PrefStylesController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
-    [BindProperty(SupportsGet = true)]
-    public string Id { get; set; }
     public PrefStylesController(UserManager<User> userManager)
     {
         this._userManager = userManager;
     }
+
+
     [HttpPost]
+    [Authorize]
     public async Task<Response> SetPreferredStyles(List<int> styles)
     {
-        User user = await _userManager.FindByEmailAsync("user@example.com"); 
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        string email = "";
+        if (identity != null)
+        {
+            IEnumerable<Claim> claims = identity.Claims;
+            // or
+            email = identity.FindFirst("Email")!.Value;
+
+        }
+    
         Response response = new Response();
         response.Status = ResponseStatus.Ok;
         response.Message = "Preferred Styles Set";
@@ -30,7 +46,7 @@ public class PrefStylesController : ControllerBase
         {
             { "Success", true},
             {"List", styles},
-            {"UserToken", await _userManager.FindByEmailAsync("user@example.com") }
+            {"User", _userManager.FindByEmailAsync(email) }
         };
         return response;
     }

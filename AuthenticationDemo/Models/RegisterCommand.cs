@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace AuthenticationDemo.Models;
 
-public class UserCommand
+public class RegisterCommand
 {
     [Required]
     [RegularExpression(@"^([\u0621-\u064A\s]+|[a-zA-Z\s]+)$")]

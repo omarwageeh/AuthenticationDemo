@@ -12,10 +12,6 @@ public class User : IdentityUser
     [Required]
     [RegularExpression(@"^([\u0621-\u064A\s]+|[a-zA-Z\s]+)$")]
     public string LastName { get; set; }
-    [Required]
-    [EmailAddress]
-    [StringLength(255)]
-    public string Email { get; set; }
     public bool IsEmailConfirmed { get; set; }
     [Required]
     public string? FacebookID { get; set; }
