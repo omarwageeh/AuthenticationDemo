@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AuthenticationDemo.Enums;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,9 +15,10 @@ public class User : IdentityUser
     public string LastName { get; set; }
     public bool IsEmailConfirmed { get; set; }
     [Required]
-    public string? FacebookID { get; set; }
-    public string? GoogleID { get; set; }
+    public string? FacebookId { get; set; }
+    public string? GoogleId { get; set; }
     public string? ProfilePicture { get; set; }
+    public Language LanguageId { get; set; }
     [NotMapped]
     public List<int> PreferredStyles { get; set; }
 }

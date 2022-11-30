@@ -18,10 +18,12 @@ namespace AuthenticationDemo.Controllers;
 [AllowAnonymous]
 public class PrefStylesController : ControllerBase
 {
+    private readonly ILogger<PrefStylesController> _logger;
     private readonly UserManager<User> _userManager;
-    public PrefStylesController(UserManager<User> userManager)
+    public PrefStylesController(ILogger<PrefStylesController> logger, UserManager<User> userManager)
     {
-        this._userManager = userManager;
+        _logger = logger;
+        _userManager = userManager;
     }
 
 
@@ -46,7 +48,7 @@ public class PrefStylesController : ControllerBase
         {
             { "Success", true},
             {"List", styles},
-            {"User", _userManager.FindByEmailAsync(email) }
+            {"User", await _userManager.FindByEmailAsync(email) }
         };
         return response;
     }

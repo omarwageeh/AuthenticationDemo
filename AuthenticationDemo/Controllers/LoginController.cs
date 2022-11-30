@@ -10,19 +10,24 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace AuthenticationDemo.Controllers;
-[Route("Login")]
 
+[AllowAnonymous]
+[ApiController]
+[Route("Login")]
 public class LoginController : ControllerBase
 {
+    private readonly ILogger<LoginController> _logger;
+    private readonly IConfiguration _config;
     private readonly UserManager<User> _userManager;
-    private readonly IConfiguration _iConfig;
-    public LoginController(UserManager<User> userManager, IConfiguration iConfig)
+
+    public LoginController(ILogger<LoginController> logger, IConfiguration config, UserManager<User> userManager)
     {
+        _logger = logger;
+        _config = config;
         _userManager = userManager;
-        _iConfig = iConfig;
     }
+
     [HttpPost]
-    [AllowAnonymous]
     public async Task<Response> Login([FromBody] LoginCommand model)
     {
         Response response = new Response();
@@ -58,14 +63,13 @@ public class LoginController : ControllerBase
 
         return response;
     }
-
+    //use Access_Token
     private JwtSecurityToken GetToken(List<Claim> authClaims)
     {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_iConfig["Jwt:Key"]));
-
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var token = new JwtSecurityToken(
-            issuer: _iConfig["Jwt:Issuer"],
-            audience: _iConfig["Jwt:Audience"],
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
             expires: DateTime.Now.AddHours(3),
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)

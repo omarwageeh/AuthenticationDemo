@@ -5,18 +5,21 @@ using AuthenticationDemo.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace AuthenticationDemo.Controllers;
-[AllowAnonymous]
-[Route("RegisterUser")]
 
+[AllowAnonymous]
+[ApiController]
+[Route("RegisterUser")]
 public class RegistrationController : ControllerBase
 {
+    private readonly ILogger<RegistrationController> _logger;
     private readonly UserManager<User> _userManager;
-    private IConfiguration _config;
-    public RegistrationController(UserManager<User> userManager, IConfiguration config)
+
+    public RegistrationController(ILogger<RegistrationController> logger, UserManager<User> userManager)
     {
-        this._userManager = userManager;
-        _config = config; 
+        _logger = logger;
+        _userManager = userManager; 
     }
+
     [HttpPost]
     public async Task<Response> RegisterAsync([FromBody] RegisterCommand model)
     {
@@ -32,9 +35,10 @@ public class RegistrationController : ControllerBase
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            FacebookID = model.FacebookID,
-            GoogleID = model.GoogleID,
+            FacebookId = model.FacebookId,
+            GoogleId = model.GoogleId,
             UserName = model.FirstName + model.LastName,
+            LanguageId = model.LanguageId,
         };
         var result = await _userManager.CreateAsync(user, model.Password);
         
