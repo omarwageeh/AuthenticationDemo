@@ -12,9 +12,9 @@ namespace AuthenticationDemo.Controllers;
 public class RegistrationController : ControllerBase
 {
     private readonly ILogger<RegistrationController> _logger;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<Models.User> _userManager;
 
-    public RegistrationController(ILogger<RegistrationController> logger, UserManager<User> userManager)
+    public RegistrationController(ILogger<RegistrationController> logger, UserManager<Models.User> userManager)
     {
         _logger = logger;
         _userManager = userManager; 
@@ -30,7 +30,7 @@ public class RegistrationController : ControllerBase
             response.Message = "model passed validation!!";
         }
 
-        var user = new User
+        var user = new Models.User
         {
             Email = model.Email,
             FirstName = model.FirstName,

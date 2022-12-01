@@ -12,8 +12,8 @@ namespace AuthenticationDemo.Controllers;
 public class ProfileController : ControllerBase
 {
     private readonly ILogger<ProfileController> _logger;
-    private readonly UserManager<User> _userManager;
-    public ProfileController(ILogger<ProfileController> logger, UserManager<User> userManager)
+    private readonly UserManager<Models.User> _userManager;
+    public ProfileController(ILogger<ProfileController> logger, UserManager<Models.User> userManager)
     {
         _logger = logger;
         _userManager = userManager;
@@ -21,8 +21,7 @@ public class ProfileController : ControllerBase
     [HttpGet]
     public async Task<Response> GetUserProfile()
     {
-        var userClaims = HttpContext.User.Identity as ClaimsIdentity;
-        string userId = userClaims.FindFirst("Id")!.Value;
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _userManager.FindByIdAsync(userId);
         Response response = new Response();
         response.Status = ResponseStatus.Ok;

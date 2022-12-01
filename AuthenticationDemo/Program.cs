@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Serilog;
-using Microsoft.Extensions.Logging.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using static AuthenticationDemo.Services.ClaimsPrincipalFactory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,18 +22,30 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     ServerVersion.AutoDetect(connectionString),
     o => o.SchemaBehavior(MySqlSchemaBehavior.Translate, (schema, table) => $"{schema}_{table}")));
 
-builder.Services.AddIdentityCore<User>(options => { 
-    options.User.RequireUniqueEmail = true;
+//builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, CustomClaimsPrincipalFactory>();
+builder.Services.AddIdentityCore<User>(options =>
+{
+    options.User.RequireUniqueEmail = false;
     options.SignIn.RequireConfirmedAccount = false;
-    options.SignIn.RequireConfirmedEmail = false;
+
 })
+    .AddSignInManager()//Adds signin manager
+    .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
+    .AddTokenProvider("Microsoft", typeof(DataProtectorTokenProvider<User>))//Register Token provider with "User" format
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
+//builder.Services.AddIdentity<User>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>()
+//    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignOutScheme = IdentityConstants.ExternalScheme;
 }).AddJwtBearer(options =>
 {
     options.SaveToken = true;
@@ -45,7 +60,8 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = false,
         ValidateIssuerSigningKey = true
     };
-});
+}).AddCookie(IdentityConstants.ApplicationScheme);//Adds Token Creation to NetCoreIdentity
+
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

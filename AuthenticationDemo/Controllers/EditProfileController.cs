@@ -21,8 +21,7 @@ public class EditProfileController : Controller
     [HttpPost]
     public async Task<Response> EditUserProfile(EditProfileCommand model)
     {
-        var userClaims = HttpContext.User.Identities as ClaimsIdentity;
-        string userId = userClaims.FindFirst("Id")!.Value;
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _userManager.FindByIdAsync(userId);
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
