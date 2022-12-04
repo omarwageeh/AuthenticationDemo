@@ -25,7 +25,7 @@ public class EditProfileController : Controller
         var user = await _userManager.FindByIdAsync(userId);
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
-        if(model.ProfilePicture != null)
+        if (model.ProfilePicture != null)
         {
             user.ProfilePicture = model.ProfilePicture;
         }

@@ -33,7 +33,7 @@ public class ClaimsPrincipalFactory
                 if (principal.Identity != null)
                 {
                     ((ClaimsIdentity)principal.Identity).AddClaims(
-                        new[] { new Claim(ClaimTypes.Name, user.Id) });
+                        new[] { new Claim(ClaimTypes.Name, user.Id.ToString()) });
                 }
             }
             _httpContext.HttpContext.User = principal;

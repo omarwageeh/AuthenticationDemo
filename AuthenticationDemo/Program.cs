@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using static AuthenticationDemo.Services.ClaimsPrincipalFactory;
+using AuthenticationDemo.Interfaces;
+using AuthenticationDemo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,28 +19,20 @@ builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configu
 // Add services to the container.
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(connectionString,
     ServerVersion.AutoDetect(connectionString),
     o => o.SchemaBehavior(MySqlSchemaBehavior.Translate, (schema, table) => $"{schema}_{table}")));
-
-//builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, CustomClaimsPrincipalFactory>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddIdentityCore<User>(options =>
 {
     options.User.RequireUniqueEmail = false;
     options.SignIn.RequireConfirmedAccount = false;
 
-})
-    .AddSignInManager()//Adds signin manager
-    .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
-    .AddTokenProvider("Microsoft", typeof(DataProtectorTokenProvider<User>))//Register Token provider with "User" format
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+}).AddEntityFrameworkStores<DataContext>();
 
-
-
-//builder.Services.AddIdentity<User>()
-//    .AddEntityFrameworkStores<ApplicationDbContext>()
-//    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -60,7 +54,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = false,
         ValidateIssuerSigningKey = true
     };
-}).AddCookie(IdentityConstants.ApplicationScheme);//Adds Token Creation to NetCoreIdentity
+});
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();

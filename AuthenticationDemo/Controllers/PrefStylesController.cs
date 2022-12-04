@@ -8,9 +8,8 @@ using System.Security.Claims;
 
 namespace AuthenticationDemo.Controllers;
 
-[Route("SetPreferredStyles")]
-[ApiController]
-[AllowAnonymous]
+//[Route("SetPreferredStyles")]
+//[ApiController]
 public class PrefStylesController : ControllerBase
 {
     private readonly ILogger<PrefStylesController> _logger;
@@ -27,10 +26,10 @@ public class PrefStylesController : ControllerBase
     public async Task<Response> SetPreferredStyles(List<int> styles)
     {
         var value = User.Identity.Name;
-        
+
         var userId = User.FindFirstValue(ClaimTypes.Name);
         var user = User.Identity as ClaimsIdentity;
-        //TODO Add funtionality for adding list of prefrences to database
+        //TODO Add functionality for adding list of prefrences to database
         Response response = new Response();
         response.Status = ResponseStatus.Ok;
         response.Message = "Preferred Styles Set";

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthenticationDemo.Models;
 
-public class User : IdentityUser
+public class User : IdentityUser<int>
 {
     [Required]
     [RegularExpression(@"^([\u0621-\u064A\s]+|[a-zA-Z\s]+)$")]
@@ -19,6 +19,8 @@ public class User : IdentityUser
     public string? GoogleId { get; set; }
     public string? ProfilePicture { get; set; }
     public Language LanguageId { get; set; }
-    [NotMapped]
-    public List<int> PreferredStyles { get; set; }
+    public int StyleId { get; set; }
+    public List<Style> Styles { get; set; } = new List<Style>();
+    //public int PhotoId { get; set; }
+    public List<Photo> Photos { get; set; } = new();
 }

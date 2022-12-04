@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AuthenticationDemo.Controllers;
 
-[AllowAnonymous]
-[ApiController]
-[Route("RegisterUser")]
+//[AllowAnonymous]
+//[ApiController]
+//[Route("RegisterUser")]
 public class RegistrationController : ControllerBase
 {
     private readonly ILogger<RegistrationController> _logger;
@@ -17,7 +17,7 @@ public class RegistrationController : ControllerBase
     public RegistrationController(ILogger<RegistrationController> logger, UserManager<Models.User> userManager)
     {
         _logger = logger;
-        _userManager = userManager; 
+        _userManager = userManager;
     }
 
     [HttpPost]
@@ -41,7 +41,7 @@ public class RegistrationController : ControllerBase
             LanguageId = model.LanguageId,
         };
         var result = await _userManager.CreateAsync(user, model.Password);
-        
+
         response.Data = new Dictionary<string, object>()
         {
             {"Result", result},
