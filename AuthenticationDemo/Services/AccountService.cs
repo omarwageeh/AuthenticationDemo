@@ -1,8 +1,7 @@
-﻿using AuthenticationDemo.Data;
-using AuthenticationDemo.Interfaces;
+﻿using AuthenticationDemo.Interfaces;
 using AuthenticationDemo.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace AuthenticationDemo.Services;
 
@@ -17,7 +16,7 @@ public class AccountService
     }
     public async Task<IdentityResult> RegisterUserAsync(RegisterCommand model)
     {
-        var user = new Models.User
+        var user = new User
         {
             Email = model.Email,
             FirstName = model.FirstName,

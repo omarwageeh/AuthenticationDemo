@@ -24,6 +24,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     ServerVersion.AutoDetect(connectionString),
     o => o.SchemaBehavior(MySqlSchemaBehavior.Translate, (schema, table) => $"{schema}_{table}")));
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddIdentityCore<User>(options =>

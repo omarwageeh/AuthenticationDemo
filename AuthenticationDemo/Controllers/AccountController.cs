@@ -5,9 +5,6 @@ using AuthenticationDemo.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Org.BouncyCastle.Math.EC;
-using System.Security.Claims;
 
 namespace AuthenticationDemo.Controllers;
 [ApiController]
@@ -16,12 +13,10 @@ namespace AuthenticationDemo.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly AccountService _accountService;
-    private readonly ITokenProvider _tokenProvider;
     private readonly ILogger<AccountController> _logger;
-    public AccountController(AccountService accountService, ILogger<AccountController> logger,ITokenProvider tokenProvider)
+    public AccountController(AccountService accountService, ILogger<AccountController> logger)
     {
         _accountService = accountService;
-        _tokenProvider = tokenProvider;
         _logger = logger;
     }
 
