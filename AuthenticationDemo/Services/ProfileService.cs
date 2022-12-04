@@ -23,9 +23,14 @@ public class ProfileService
         var user = await _userRepository.GetUserByEmailAsync(email);
         return user;
     }
-    public async Task<bool> EditProfile(string id, User user) //should just have a DTO instead of a User
+    public async Task<bool> EditProfile(string id, UserEdit userDto) //should just have a DTO instead of a User
     {
-        return true; //Not Implemented Yet "Should Edit User Info"
+        var userToChange = await _userRepository.GetUserByIdAsync(id);
+        userToChange.FirstName = userDto.FirstName;
+        userToChange.LastName = userDto.LastName;
+        userToChange.ProfilePicture = userDto.ProfilePicture;
+        var res = await _userRepository.Update(userToChange);
+        return res.Succeeded; 
     }
     public async Task<bool> ChangeProfilePicture(string id, string photo, string fileName, string isMain)
     {

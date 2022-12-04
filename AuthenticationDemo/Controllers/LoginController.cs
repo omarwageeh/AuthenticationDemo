@@ -11,9 +11,9 @@ using System.Data;
 
 namespace AuthenticationDemo.Controllers;
 
-//[AllowAnonymous]
-//[ApiController]
-//[Route("Login")]
+[AllowAnonymous]
+[ApiController]
+[Route("Login")]
 public class LoginController : ControllerBase
 {
     private readonly ILogger<LoginController> _logger;

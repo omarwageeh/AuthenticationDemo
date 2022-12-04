@@ -1,8 +1,6 @@
-﻿using AuthenticationDemo.Enums;
-using AuthenticationDemo.Models;
+﻿using AuthenticationDemo.Models;
 using AuthenticationDemo.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -28,7 +26,9 @@ public class ProfileController : ControllerBase
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _profileService.GetProfileById(userId);
-            return Ok(user);
+            if(user != null)
+                return Ok(user);
+            return BadRequest("UserNotFound");
         }
         catch(Exception e)
         {
@@ -56,5 +56,22 @@ public class ProfileController : ControllerBase
             _logger.LogError(e, e.Message);
             return BadRequest(e);
         }
+    }
+
+    [HttpPost("EditProfile")]
+    public async Task<ActionResult<bool>>EditUserProfile(UserEdit model)
+    {
+        try
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var ret = await _profileService.EditProfile(userId, model);
+            return Ok(ret);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, e.Message);
+            return BadRequest(e);
+        }
+        
     }
 }

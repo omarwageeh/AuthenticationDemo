@@ -8,8 +8,8 @@ using System.Security.Claims;
 
 namespace AuthenticationDemo.Controllers;
 
-//[Route("SetPreferredStyles")]
-//[ApiController]
+[Route("SetPreferredStyles")]
+[ApiController]
 public class PrefStylesController : ControllerBase
 {
     private readonly ILogger<PrefStylesController> _logger;

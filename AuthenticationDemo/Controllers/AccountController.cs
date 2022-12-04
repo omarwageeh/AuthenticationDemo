@@ -1,4 +1,5 @@
-﻿using AuthenticationDemo.Enums;
+﻿using AuthenticationDemo.DTOS;
+using AuthenticationDemo.Enums;
 using AuthenticationDemo.Interfaces;
 using AuthenticationDemo.Models;
 using AuthenticationDemo.Services;
@@ -21,7 +22,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterCommand model)
+    public async Task<ActionResult<IdentityResult>> Register([FromBody] UserRegister model)
     {
         try
         {
@@ -38,7 +39,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<ITokenProvider>> Login([FromBody] LoginCommand model)
+    public async Task<ActionResult<ITokenProvider>> Login([FromBody] UserLogin model)
     {
         try
         {
@@ -60,7 +61,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("GetUsers")]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
         try
         {

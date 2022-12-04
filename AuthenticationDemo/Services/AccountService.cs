@@ -1,5 +1,7 @@
-﻿using AuthenticationDemo.Interfaces;
+﻿using AuthenticationDemo.DTOS;
+using AuthenticationDemo.Interfaces;
 using AuthenticationDemo.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 
 
@@ -9,12 +11,14 @@ public class AccountService
 {
     private readonly IUserRepository _userRepo;
     private readonly ITokenProvider _tokenService;
-    public AccountService(IUserRepository userRepo, ITokenProvider tokenService)
+    private readonly IMapper _mapper;
+    public AccountService(IUserRepository userRepo, ITokenProvider tokenService, IMapper mapper)
     {
         _userRepo = userRepo;
         _tokenService = tokenService;
+        _mapper = mapper;
     }
-    public async Task<IdentityResult> RegisterUserAsync(RegisterCommand model)
+    public async Task<IdentityResult> RegisterUserAsync(UserRegister model)
     {
         var user = new User
         {
@@ -34,13 +38,17 @@ public class AccountService
         return await _userRepo.CheckPasswordAsync(email, password);
 
     }
-    public async Task<User> GetUserAsync(string id)
+    public async Task<UserDto> GetUserAsync(string id)
     {
-       return await _userRepo.GetUserByIdAsync(id);
+        var user = await _userRepo.GetUserByIdAsync(id);
+        var userToReturn = _mapper.Map<UserDto>(user);
+        return userToReturn;
     }
-    public async Task<IEnumerable<User>> GetUsersAsync()
+    public async Task<IEnumerable<UserDto>> GetUsersAsync()
     {
-        return await _userRepo.GetUsersAsync();
+        var users = await _userRepo.GetUsersAsync();
+        var usersToReturn = _mapper.Map<IEnumerable<UserDto>>(users);
+        return usersToReturn;
     }
     public async Task<Token> GetTokenAsync(string email, bool refreshToken = false)
     {

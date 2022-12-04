@@ -6,10 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Serilog;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using static AuthenticationDemo.Services.ClaimsPrincipalFactory;
 using AuthenticationDemo.Interfaces;
 using AuthenticationDemo.Services;
 
@@ -23,10 +20,13 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(connectionString,
     ServerVersion.AutoDetect(connectionString),
     o => o.SchemaBehavior(MySqlSchemaBehavior.Translate, (schema, table) => $"{schema}_{table}")));
+
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddIdentityCore<User>(options =>
 {
     options.User.RequireUniqueEmail = false;

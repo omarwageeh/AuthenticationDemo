@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AuthenticationDemo.Controllers;
 
-//[AllowAnonymous]
-//[ApiController]
-//[Route("RegisterUser")]
+[AllowAnonymous]
+[ApiController]
+[Route("RegisterUser")]
 public class RegistrationController : ControllerBase
 {
     private readonly ILogger<RegistrationController> _logger;

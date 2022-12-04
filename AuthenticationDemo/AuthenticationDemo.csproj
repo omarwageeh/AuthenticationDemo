@@ -8,6 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\EditProfileController.cs" />
+    <Compile Remove="Controllers\LoginController.cs" />
+    <Compile Remove="Controllers\PrefStylesController.cs" />
+    <Compile Remove="Controllers\RegistrationController.cs" />
+    <Compile Remove="Controllers\WeatherForecastController.cs" />
+    <Compile Remove="Models\EditProfileCommand.cs" />
+    <Compile Remove="Models\LoginCommand.cs" />
+    <Compile Remove="Models\RegisterCommand.cs" />
+    <Compile Remove="Services\ClaimsPrincipalFactory.cs" />
+    <Compile Remove="WeatherForecast.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.11" />
@@ -28,11 +42,6 @@
     <PackageReference Include="Serilog.Sinks.MySQL" Version="4.6.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DTOS\" />
-    <Folder Include="Repos\" />
   </ItemGroup>
 
   <ItemGroup>
