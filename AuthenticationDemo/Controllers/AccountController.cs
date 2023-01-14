@@ -22,13 +22,14 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public async Task<ActionResult<IdentityResult>> Register([FromBody] UserRegister model)
+    public async Task<ActionResult<Response<IdentityResult>>> Register([FromBody] UserRegister model)
     {
         try
         {
+            var ret = new Response<IdentityResult>();
             var res = await _accountService.RegisterUserAsync(model);
             if (res.Succeeded)
-                return Ok(res);
+                return Ok(new Response<IdentityResult>(ResponseStatus.Ok, "Success", res));
             return BadRequest(res);
         }
         catch(Exception e)
@@ -39,7 +40,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<ITokenProvider>> Login([FromBody] UserLogin model)
+    public async Task<ActionResult<Response<Token>>> Login([FromBody] UserLogin model)
     {
         try
         {
@@ -49,7 +50,7 @@ public class AccountController : ControllerBase
             {
                 var token = await _accountService.GetTokenAsync(model.Email);
 
-                return Ok(token);
+                return Ok(new Response<Token>(ResponseStatus.Ok, "User Validated", token, 1));
             }
             return BadRequest(new List<object>() { model, "Invalid Credentials" });
         }
@@ -61,12 +62,15 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("GetUsers")]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+    public async Task<ActionResult<Response<IEnumerable<UserDto>>>> GetUsers()
     {
         try
         {
-            var ret = await _accountService.GetUsersAsync();
-            return Ok(new Dictionary<string, object>{ { "count", ret.Count() }, { "users", ret } } );
+            var res = await _accountService.GetUsersAsync();
+            if(res==null)
+                return BadRequest(new Response<UserDto>(ResponseStatus.Ok, "Failed To Get Users"));
+            var ret = new Response<IEnumerable<UserDto>>(ResponseStatus.Ok, "Success", res, res.Count());
+            return Ok(ret);
         }
         catch(Exception e)
         {
